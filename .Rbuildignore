@@ -1,0 +1,10 @@
+^\.git$
+^\.github$
+^\.gitignore$
+^README\.md$
+^LICENSE\.md$
+^CITATION\.cff$
+^docs$
+^scripts$
+^outputs$
+^.*\.Rcheck$

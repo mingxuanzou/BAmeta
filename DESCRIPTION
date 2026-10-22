@@ -1,0 +1,22 @@
+Package: BaMeta
+Type: Package
+Title: Bias-Aware Meta-Analysis with Bounded Study Biases
+Version: 0.1.0
+Authors@R: person("Mingxuan", "Zou", email = "mingxuanzou@uchicago.edu",
+    role = c("aut", "cre"))
+Author: Mingxuan Zou [aut, cre]
+Maintainer: Mingxuan Zou <mingxuanzou@uchicago.edu>
+Description: Implements bias-aware meta-analysis for independent study
+    estimates with fixed, bounded biases. Provides folded-normal sensitivity
+    intervals, maximum bias for significance, noncentral chi-square model
+    checking, minimum bias for compatibility, fixed-effect and random-effects
+    summaries, and descriptive calibration diagnostics. Produces manuscript
+    tables, sensitivity curves, and calibration histograms. Includes the
+    reconstructed Williams example used by Zou and Ding (2026).
+License: MIT + file LICENSE
+URL: https://github.com/mingxuanzou/ba_meta
+BugReports: https://github.com/mingxuanzou/ba_meta/issues
+Encoding: UTF-8
+Depends: R (>= 4.1.0)
+Imports: stats, graphics, utils
+

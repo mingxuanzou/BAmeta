@@ -1,0 +1,34 @@
+name: R CMD check
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: ubuntu-latest, r: release}
+          - {os: windows-latest, r: release}
+          - {os: macos-latest, r: release}
+          - {os: ubuntu-latest, r: devel}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+      - name: Build and check
+        shell: Rscript {0}
+        run: |
+          build <- system2(file.path(R.home("bin"), "R"), c("CMD", "build", "."))
+          if (build != 0L) stop("R CMD build failed")
+          tarball <- list.files(pattern = "^BaMeta_.*[.]tar[.]gz$")
+          stopifnot(length(tarball) == 1L)
+          status <- system2(file.path(R.home("bin"), "R"), c("CMD", "check", "--as-cran", "--no-manual", tarball))
+          if (status != 0L) stop("R CMD check failed")
+          log <- readLines("BaMeta.Rcheck/00check.log")
+          if (any(grepl("(ERROR|WARNING)$", log))) stop("Check has errors or warnings")

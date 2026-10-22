@@ -1,0 +1,24 @@
+class,study,estimate,variance,se,n_published_arms,aggregation
+TAD,Souery et al. 2015,-8.4,0.314984503668677,0.5612348026171194,1,single published arm
+TAD,Kennedy et al. 2019,-9.0,0.4399370340496399,0.6632774940020503,1,single published arm
+TAD,Gargoloff et al. 2016,-9.8,1.37708101190686,1.173490950926704,1,single published arm
+TAD,Thase et al. 1997,-10.3,1.0939854352624914,1.0459375866955405,1,single published arm
+TAD,Lesser et al. 2010,-10.6,0.5102228323889314,0.7142988396945157,1,single published arm
+TAD,Husain et al. 2023,-10.9,0.9397471555734908,0.9694055681568426,1,single published arm
+TAD,Trivedi et al. 2013,-11.800000000000002,0.3149845036686772,0.5612348026171197,1,single published arm
+TAD,Trivedi et al. 2006,-13.300000000000002,0.7972231756077051,0.8928735496181445,1,single published arm
+TAD,Chokka and Legault,-13.6,0.2108573950178748,0.4591921112321887,1,single published arm
+TAD,Hudson et al. 2007,-13.8,0.2870003432187742,0.535724129770887,1,single published arm
+TAD,Pecenak and Novotny 2013,-14.6,1.0939854352624914,1.0459375866955405,1,single published arm
+TAD,Cervera-Enguix et al.,-15.2,0.10998425851241,0.3316387470010252,1,single published arm
+TAD,Thase et al. 2001,-15.5,0.3442702529767152,0.5867454754633522,1,single published arm
+TAD,Taragano et al. 1990,-15.6,0.5102228323889314,0.7142988396945157,1,single published arm
+TAD,Pinto et al. 2007,-16.6,1.4994303645715523,1.2245122966191693,1,single published arm
+PAT,Sloshower et al. 2023,-7.1,4.925863033612016,2.2194285376222447,1,single published arm
+PAT,von Rotz et al. 2023,-9.0,2.5830030889689644,1.60717238931266,1,single published arm
+PAT,Goodwin et al. 2022,-10.0,2.8348605330180923,1.683704407851358,1,single published arm
+PAT,Carhart-Harris et al. 2021,-10.7,1.37708101190686,1.173490950926704,1,single published arm
+PAT,Davis et al. 2021,-13.4,4.813275597383337,2.1939178647760125,1,single published arm
+PAT,Palhano-Fontes et al. 2019,-13.8,9.528281235977472,3.086791414394156,1,single published arm
+PAT,Carhart-Harris et al. 2016,-15.0,3.280654716929337,1.811257772082521,1,single published arm
+PAT,Raison et al. 2023,-15.4,5.6287210170049295,2.3724925746996406,1,single published arm

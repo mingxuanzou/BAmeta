@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>BAMA analysis</title>
+<style>body{max-width:1160px;margin:36px auto;padding:0 24px;color:#17212b;background:#fff;font:16px/1.5 Georgia,serif}h1{font-size:24px;font-weight:normal}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:14px;margin:20px 0 12px}caption{text-align:left;font-weight:bold;font-size:17px;padding:10px 0}thead{border-top:2px solid #17212b;border-bottom:1px solid #17212b}tbody{border-bottom:2px solid #17212b}th,td{padding:7px 10px;text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}td:nth-child(2),th:nth-child(2){text-align:left}thead tr:first-child:not(:last-child) th{white-space:normal;text-align:center}p.note{font-size:13px;margin:6px 0;color:#34414a}.table-scroll{overflow-x:auto}footer{margin-top:24px;border-top:1px solid #ccd2d6;padding-top:12px}</style></head><body>
+<h1>Bias-aware meta-analysis</h1>
+<div class="table-scroll"><table><caption>Panel A. FEMA and REMA</caption><thead><tr><th scope="col">Treatment</th><th scope="col">Procedure</th><th scope="col">Estimate</th><th scope="col">SE</th><th scope="col">t-statistic</th><th scope="col">95% CI</th><th scope="col">p-value</th></tr></thead><tbody><tr><td>Open-label TADs</td><td>FEMA</td><td>-13.078</td><td>0.162</td><td>-80.944</td><td>[-13.395, -12.762]</td><td>&lt;0.001 ***</td></tr>
+<tr><td></td><td>REMA</td><td>-12.603</td><td>0.680</td><td>-18.538</td><td>[-13.935, -11.270]</td><td>&lt;0.001 ***</td></tr>
+<tr><td></td><td>FEMA<sub>&dagger;</sub></td><td>-13.078</td><td>0.855</td><td>-15.298</td><td>[-14.754, -11.403]</td><td>&lt;0.001 ***</td></tr>
+<tr><td>PAT</td><td>FEMA</td><td>-11.267</td><td>0.637</td><td>-17.686</td><td>[-12.515, -10.018]</td><td>&lt;0.001 ***</td></tr>
+<tr><td></td><td>REMA</td><td>-11.530</td><td>0.988</td><td>-11.666</td><td>[-13.467, -9.593]</td><td>&lt;0.001 ***</td></tr>
+<tr><td></td><td>FEMA<sub>&dagger;</sub></td><td>-11.267</td><td>1.039</td><td>-10.841</td><td>[-13.303, -9.230]</td><td>&lt;0.001 ***</td></tr></tbody></table></div>
+<p class="note">Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</p>
+<p class="note">Open-label TADs: J = 15; Q = 228.409 on 14 degrees of freedom; p_Q(0) &lt;0.001; between-study variance = 6.302.</p>
+<p class="note">PAT: J = 8; Q = 15.215 on 7 degrees of freedom; p_Q(0) = 0.033; between-study variance = 4.008.</p>
+<div class="table-scroll"><table><caption>Panel B. BAMA</caption><thead><tr><th colspan="3"></th><th colspan="2">Maximum bias for significance</th><th colspan="2">Minimum bias for compatibility</th></tr><tr><th scope="col">Treatment</th><th scope="col">Optimistic interval</th><th scope="col">Optimistic p-value</th><th scope="col">Exact</th><th scope="col">Approximation</th><th scope="col">Exact</th><th scope="col">Approximation</th></tr></thead><tbody><tr><td>Open-label TADs</td><td>[-15.445, -10.711]</td><td>&lt;0.001 ***</td><td>20.475</td><td>20.900</td><td>3.358</td><td>4.012</td></tr>
+<tr><td>PAT</td><td>[-12.806, -9.727]</td><td>&lt;0.001 ***</td><td>5.671</td><td>6.253</td><td>0.270</td><td>1.111</td></tr></tbody></table></div>
+<footer>
+<p class="note">FEMA_dagger uses the FEMA point estimate with the REMA-adjusted variance.</p>
+</footer></body></html>

@@ -1,0 +1,3 @@
+"treatment","optimistic_lower","optimistic_upper","optimistic_p_value","b_significance","approx_significance","b_compatibility","approx_compatibility","q_method","level","null","optimistic_valid"
+"Open-label TADs",-15.4452295860076,-10.7112511035292,0,20.4748393155652,20.8995386958407,3.3578418436061,4.01169458372095,"exact",0.95,0,FALSE
+"PAT",-12.8058763415684,-9.72720024045762,1.55497778583147e-64,5.67147146319202,6.25301504003036,0.270269360165179,1.11113406200557,"exact",0.95,0,FALSE
