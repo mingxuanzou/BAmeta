@@ -1,4 +1,5 @@
-\name{ba_meta}
+\name{bama}
+\alias{bama}
 \alias{ba_meta}
 \alias{bama_ci}
 \alias{bama_pvalue}
@@ -14,6 +15,10 @@ sensitivity intervals, significance and compatibility thresholds, and
 study-level dispersion and leave-one-study-out diagnostics.
 }
 \usage{
+bama(estimate, se = NULL, variance = NULL, study = NULL,
+  level = 0.95, null = 0,
+  q_method = c("auto", "exact", "conservative"), exact_max = 36L)
+
 ba_meta(estimate, se = NULL, variance = NULL, study = NULL,
   level = 0.95, null = 0,
   q_method = c("auto", "exact", "conservative"), exact_max = 36L)
@@ -30,9 +35,15 @@ bama_diagnostics(object)
 }
 \arguments{
   \item{estimate}{Finite numeric vector of study-level effect estimates,
-  with at least two entries. One entry must represent one independent study.}
+  with at least two entries. One entry must represent one independent study.
+  Alternatively, a named list or data frame with \code{estimate}, exactly one
+  of \code{se} and \code{variance}, and optional \code{study}; or a nonempty
+  named list of such inputs for separate analyses. Input field names must be
+  unique, and additional fields are rejected.}
   \item{se}{Positive finite standard errors. Supply exactly one of
-  \code{se} and \code{variance}.}
+  \code{se} and \code{variance}. For list or data-frame inputs, supply
+  uncertainty and study identifiers inside the input rather than again as
+  separate arguments.}
   \item{variance}{Positive finite sampling variances.}
   \item{study}{Optional unique, nonmissing study identifiers.}
   \item{level}{Confidence level, strictly between 0.5 and 1. The same
@@ -46,10 +57,16 @@ bama_diagnostics(object)
   \code{exact_max}, otherwise announces the conservative bound.}
   \item{exact_max}{Largest number of studies for exact partitioning;
   an integer from 2 to 36. The upper limit prevents exponential memory growth.}
-  \item{object}{A \code{bama_fit} object returned by \code{ba_meta}.}
+  \item{object}{A \code{bama_fit} object returned by \code{bama}.}
   \item{b}{Nonempty vector of finite, nonnegative standardized bias bounds.}
 }
 \details{
+\code{bama} is the main fitting function. \code{ba_meta} is retained as
+a compatibility alias. For a named list of study inputs, the same
+\code{level}, \code{null}, \code{q_method}, and \code{exact_max} are
+applied to every analysis. The list names supply treatment labels.
+\code{bama(williams_data())} fits both Williams treatment groups separately.
+
 Let \eqn{J} be the number of studies, \eqn{\sigma_j^2} their sampling
 variances, \eqn{\lambda_j=\sigma_j^{-2}/\sum_k\sigma_k^{-2}},
 \eqn{\widehat\tau_{FE}=\sum_j\lambda_j\widehat\tau_j}, and
@@ -107,7 +124,8 @@ silently omitted. Multiple dependent estimates from the same trial must
 not be entered as independent studies.
 }
 \value{
-\code{ba_meta} returns an object of class \code{bama_fit} containing the
+\code{bama} returns an object of class \code{bama_fit} for one analysis,
+or a named list of such objects for grouped inputs. Each fitted object contains the
 input vectors, normalized precision \code{weights}, \code{J},
 \code{level}, \code{null}, and reference \code{scale}. Components
 \code{fe}, \code{re}, and \code{fe_dagger} are lists containing
@@ -143,11 +161,20 @@ DerSimonian, R. and Laird, N. (1986). Meta-analysis in clinical trials.
 \emph{Controlled Clinical Trials}, \bold{7}, 177--188.
 }
 \examples{
-fit <- ba_meta(c(-1.2, -0.8, -1.5, -0.9),
-               se = c(0.2, 0.3, 0.25, 0.2))
+fit <- bama(
+  estimate = c(-0.30, -0.50, -0.20, -0.40),
+  se = c(0.10, 0.20, 0.15, 0.12),
+  study = c("Study 1", "Study 2", "Study 3", "Study 4")
+)
 fit$fe
 bama_ci(fit, b = c(0, 0.5, 1))
 bama_thresholds(fit)
 bama_diagnostics(fit)
 bama_q_pvalue(fit, b = c(0, 0.5, 1))
+
+# The same input fields can be supplied together as a list.
+dat <- list(estimate = c(-0.30, -0.50, -0.20, -0.40),
+            se = c(0.10, 0.20, 0.15, 0.12),
+            study = c("Study 1", "Study 2", "Study 3", "Study 4"))
+fit <- bama(dat)
 }

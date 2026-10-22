@@ -86,7 +86,7 @@ columns returned by \code{bama_tables}.
 Labels are escaped for the selected output format.
 }
 \examples{
-x <- ba_meta(c(-0.4, -0.7, -0.2, -0.5), se = c(0.1, 0.2, 0.15, 0.12))
+x <- bama(c(-0.4, -0.7, -0.2, -0.5), se = c(0.1, 0.2, 0.15, 0.12))
 tab <- bama_tables(x)
 tab$panel_a
 tab$panel_b
@@ -95,4 +95,4 @@ html <- tempfile(fileext = ".html")
 bama_report(x, file = html)
 unlink(html)
 }
-\seealso{\code{\link{ba_meta}}, \code{\link{bama_diagnostics}}}
+\seealso{\code{\link{bama}}, \code{\link{bama_diagnostics}}}

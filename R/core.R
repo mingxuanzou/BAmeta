@@ -14,7 +14,7 @@
 
 .bama_check_fit <- function(object) {
   if (!inherits(object, "bama_fit")) {
-    stop("object must be a fit returned by ba_meta().", call. = FALSE)
+    stop("object must be a fit returned by bama().", call. = FALSE)
   }
   invisible(object)
 }
@@ -116,10 +116,58 @@
   stats::uniroot(f, c(0, upper), tol = 1e-11)$root / sqrt(J * kappa)
 }
 
-ba_meta <- function(estimate, se = NULL, variance = NULL, study = NULL,
+bama <- function(estimate, se = NULL, variance = NULL, study = NULL,
                     level = 0.95, null = 0,
                     q_method = c("auto", "exact", "conservative"),
                     exact_max = 36L) {
+  fit_call <- match.call()
+  q_method <- match.arg(q_method)
+  if (is.list(estimate)) {
+    if (!is.null(se) || !is.null(variance) || !is.null(study)) {
+      stop("For list or data-frame input, include se or variance and study ",
+           "inside the input rather than supplying them separately.",
+           call. = FALSE)
+    }
+    input_names <- names(estimate)
+    if (!length(estimate) || is.null(input_names) || anyNA(input_names) ||
+        any(!nzchar(trimws(input_names))) || anyDuplicated(input_names)) {
+      stop("List or data-frame input must have nonempty, unique names.",
+           call. = FALSE)
+    }
+    fields <- c("estimate", "se", "variance", "study")
+    single <- is.data.frame(estimate) || !all(vapply(estimate, function(x) {
+      is.list(x) && "estimate" %in% names(x)
+    }, logical(1)))
+    if (single) {
+      if (!("estimate" %in% input_names) || any(!input_names %in% fields)) {
+        stop("A study input must contain estimate and only the optional ",
+             "fields se, variance and study.", call. = FALSE)
+      }
+      label <- attr(estimate, "label", exact = TRUE)
+      if (!is.null(label) && (!is.character(label) || length(label) != 1L ||
+                            is.na(label) || !nzchar(trimws(label)))) {
+        stop("The input label must be one nonempty character string.",
+             call. = FALSE)
+      }
+      if (is.list(estimate[["estimate"]])) {
+        stop("The estimate field must be a numeric vector.", call. = FALSE)
+      }
+      fit <- bama(estimate[["estimate"]], se = estimate[["se"]],
+                  variance = estimate[["variance"]], study = estimate[["study"]],
+                  level = level, null = null, q_method = q_method,
+                  exact_max = exact_max)
+      fit$call <- fit_call
+      if (!is.null(label)) fit$label <- label
+      return(fit)
+    }
+    fits <- lapply(estimate, bama, level = level, null = null,
+                   q_method = q_method, exact_max = exact_max)
+    for (i in seq_along(fits)) {
+      fits[[i]]$label <- input_names[i]
+      fits[[i]]$call <- fit_call
+    }
+    return(fits)
+  }
   estimate <- .bama_numeric(estimate, "estimate")
   J <- length(estimate)
   if (J < 2L) stop("At least two independent studies are required.", call. = FALSE)
@@ -144,7 +192,6 @@ ba_meta <- function(estimate, se = NULL, variance = NULL, study = NULL,
   if (exact_max < 2 || exact_max > 36 || exact_max != floor(exact_max)) {
     stop("exact_max must be an integer between 2 and 36.", call. = FALSE)
   }
-  q_method <- match.arg(q_method)
   requested_method <- q_method
   if (q_method == "auto") {
     q_method <- if (J <= exact_max) "exact" else "conservative"
@@ -215,7 +262,7 @@ ba_meta <- function(estimate, se = NULL, variance = NULL, study = NULL,
          call. = FALSE)
   }
   result <- list(
-    call = match.call(), J = J, estimate = estimate, variance = variance,
+    call = fit_call, J = J, estimate = estimate, variance = variance,
     study = study, weights = weights, level = level, null = null,
     scale = sqrt(J) * fe_se, fe = fe, re = re,
     fe_dagger = .bama_wald(fe_estimate, dagger_se, null, level),
@@ -239,6 +286,9 @@ ba_meta <- function(estimate, se = NULL, variance = NULL, study = NULL,
   )
   result
 }
+
+# Compatibility with code written before bama() became the main entry point.
+ba_meta <- bama
 
 bama_ci <- function(object, b) {
   .bama_check_fit(object)

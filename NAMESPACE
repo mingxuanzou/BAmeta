@@ -1,3 +1,4 @@
+export(bama)
 export(ba_meta)
 export(bama_ci)
 export(bama_pvalue)

@@ -1,3 +1,14 @@
+# BaMeta 0.1.1
+
+- Makes `bama()` the main fitting function, with direct vectors, named study
+  inputs, or a named list of inputs for separate analyses.
+- Changes `williams_data()` to return study inputs containing `estimate`, `se`,
+  and `study`, ready for `bama(williams_data())`. Select one treatment with
+  `williams_data("PAT")` or `williams_data("TAD")`; use
+  `format = "data.frame"` for the original data frame with provenance columns.
+- Retains `ba_meta()` and `williams_example()` as compatibility functions.
+- Renames the GitHub repository to `BaMeta` and simplifies the README.
+
 # BaMeta 0.1.0
 
 - Implements the treatment-control BAMA methods in the October 2026 manuscript.

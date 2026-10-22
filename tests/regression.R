@@ -45,11 +45,11 @@ reference <- list(
           max_bj = 2.3124606623268553)
 )
 
-dat <- williams_data()
+dat <- williams_data(format = "data.frame")
 stopifnot(nrow(dat) == 23L, !any(grepl("Arns", dat$study)))
 for (group in names(reference)) {
   d <- dat[dat$class == group, , drop = FALSE]
-  fit <- ba_meta(d$estimate, variance = d$variance, study = d$study,
+  fit <- bama(d$estimate, variance = d$variance, study = d$study,
                  q_method = "exact")
   th <- bama_thresholds(fit)
   dg <- bama_diagnostics(fit)
@@ -87,7 +87,7 @@ for (group in names(reference)) {
   # Check deleted estimates by explicit refitting, separately from the
   # algebraic leverage identity used to interpret standardized shifts.
   deleted <- vapply(seq_len(nrow(d)), function(j) {
-    ba_meta(d$estimate[-j], variance = d$variance[-j])$fe$estimate
+    bama(d$estimate[-j], variance = d$variance[-j])$fe$estimate
   }, numeric(1))
   close_to(dg$leave_one_out_estimate, deleted)
   close_to(dg$standardized_shift,
@@ -105,7 +105,7 @@ for (weights in weight_cases) {
   J <- length(weights)
   signs <- as.matrix(expand.grid(rep(list(c(-1, 1)), J)))
   residue <- min(abs(as.vector(signs %*% weights)))
-  fit <- ba_meta(seq_len(J), variance = 1 / weights, q_method = "exact")
+  fit <- bama(seq_len(J), variance = 1 / weights, q_method = "exact")
   close_to(fit$q$partition_residual, residue, 1e-12, "partition residue")
   close_to(fit$q$kappa, 1 - residue^2, 1e-12, "partition coefficient")
 }
@@ -114,8 +114,8 @@ for (weights in weight_cases) {
 # noncentrality bound must give larger p-values and a smaller lower threshold.
 y <- c(-3, -1, 0.4, 2.1, 4.8)
 se <- c(0.3, 0.5, 0.6, 0.8, 1.1)
-fit <- ba_meta(y, se = se)
-conservative <- ba_meta(y, se = se, q_method = "conservative")
+fit <- bama(y, se = se)
+conservative <- bama(y, se = se, q_method = "conservative")
 grid <- c(0, 0.1, 0.5, 1, 2, 4)
 close_to(bama_q_pvalue(fit, grid),
          stats::pchisq(fit$Q, df = length(y) - 1,
@@ -135,10 +135,10 @@ invariant_values <- function(fit) {
 
 # Change the unit, move the origin together with the tested null, and reorder
 # studies. These transformations should preserve all dimensionless results.
-scaled <- ba_meta(7.3 * y, se = 7.3 * se)
-shifted <- ba_meta(y + 12.5, se = se, null = 12.5)
+scaled <- bama(7.3 * y, se = 7.3 * se)
+shifted <- bama(y + 12.5, se = se, null = 12.5)
 order <- c(4, 1, 5, 2, 3)
-permuted <- ba_meta(y[order], se = se[order])
+permuted <- bama(y[order], se = se[order])
 for (other in list(scaled, shifted, permuted)) {
   close_to(invariant_values(other), invariant_values(fit))
 }
@@ -150,7 +150,7 @@ close_to(scaled$fe$estimate, 7.3 * fit$fe$estimate)
 close_to(scaled$re$tau2, 7.3^2 * fit$re$tau2)
 
 # A sign change reflects the intervals and preserves absolute thresholds.
-reversed <- ba_meta(-y, se = se)
+reversed <- bama(-y, se = se)
 close_to(invariant_values(reversed), invariant_values(fit))
 original_ci <- bama_ci(fit, grid)
 reversed_ci <- bama_ci(reversed, grid)
@@ -158,7 +158,7 @@ close_to(reversed_ci$lower, -original_ci$upper)
 close_to(reversed_ci$upper, -original_ci$lower)
 
 # The b=0 nested model and non-significant limit must not need root-finding.
-zero <- ba_meta(rep(0, 4), se = rep(1, 4))
+zero <- bama(rep(0, 4), se = rep(1, 4))
 stopifnot(zero$Q == 0, zero$Q_p == 1, zero$re$tau2 == 0,
           zero$thresholds$b_significance == 0,
           zero$thresholds$b_compatibility == 0,
@@ -166,13 +166,13 @@ stopifnot(zero$Q == 0, zero$Q_p == 1, zero$re$tau2 == 0,
           all(bama_diagnostics(zero)$b_j == 0),
           all(bama_q_pvalue(zero, c(0, 1, 10)) == 1))
 close_to(bama_ci(zero, 0)$critical, stats::qnorm(0.975))
-nonsignificant <- ba_meta(c(-0.2, 0, 0.2), se = rep(1, 3))
+nonsignificant <- bama(c(-0.2, 0, 0.2), se = rep(1, 3))
 stopifnot(nonsignificant$thresholds$b_significance == 0)
 
 # Strong signals and confidence levels close to either allowed endpoint
 # exercise the folded-normal inversion independently through its tail equation.
 for (level in c(0.51, 0.95, 0.999999)) {
-  strong <- ba_meta(c(80, 81, 79), se = c(1, 1.5, 2), level = level)
+  strong <- bama(c(80, 81, 79), se = c(1, 1.5, 2), level = level)
   boundary <- strong$thresholds$b_significance
   close_to(bama_pvalue(strong, boundary), 1 - level, 1e-10)
   close_to(bama_ci(strong, boundary)$lower, 0, 1e-8)
@@ -184,26 +184,86 @@ for (level in c(0.51, 0.95, 0.999999)) {
 
 # Validation must report unsupported/ambiguous inputs rather than silently
 # coercing values, dropping studies, or selecting an uncertainty measure.
-must_error(ba_meta(1, se = 1))
-must_error(ba_meta(numeric(), se = numeric()))
-must_error(ba_meta(c(1, 2), se = 1))
-must_error(ba_meta(c(1, NA_real_), se = c(1, 1)))
-must_error(ba_meta(c(1, Inf), se = c(1, 1)))
-must_error(ba_meta(c("1", "2"), se = c(1, 1)))
-must_error(ba_meta(c(1, 2), se = c(0, 1)))
-must_error(ba_meta(c(1, 2), variance = c(-1, 1)))
-must_error(ba_meta(c(1, 2), se = c(1, 1), variance = c(1, 1)))
-must_error(ba_meta(c(1, 2)))
-must_error(ba_meta(c(1, 2), se = c(1, 1), level = 0.5))
-must_error(ba_meta(c(1, 2), se = c(1, 1), level = 1))
-must_error(ba_meta(c(1, 2), se = c(1, 1), null = NA_real_))
-must_error(ba_meta(c(1, 2), se = c(1, 1), study = c("x", "x")))
-must_error(ba_meta(c(1, 2), se = c(1, 1), study = c("x", "")))
-must_error(ba_meta(c(1, 2, 3), se = c(1, 1, 1), q_method = "exact",
+must_error(bama(1, se = 1))
+must_error(bama(numeric(), se = numeric()))
+must_error(bama(c(1, 2), se = 1))
+must_error(bama(c(1, NA_real_), se = c(1, 1)))
+must_error(bama(c(1, Inf), se = c(1, 1)))
+must_error(bama(c("1", "2"), se = c(1, 1)))
+must_error(bama(c(1, 2), se = c(0, 1)))
+must_error(bama(c(1, 2), variance = c(-1, 1)))
+must_error(bama(c(1, 2), se = c(1, 1), variance = c(1, 1)))
+must_error(bama(c(1, 2)))
+must_error(bama(c(1, 2), se = c(1, 1), level = 0.5))
+must_error(bama(c(1, 2), se = c(1, 1), level = 1))
+must_error(bama(c(1, 2), se = c(1, 1), null = NA_real_))
+must_error(bama(c(1, 2), se = c(1, 1), study = c("x", "x")))
+must_error(bama(c(1, 2), se = c(1, 1), study = c("x", "")))
+must_error(bama(c(1, 2, 3), se = c(1, 1, 1), q_method = "exact",
                    exact_max = 2))
 must_error(bama_ci(fit, -1))
 must_error(bama_ci(fit, NA_real_))
 must_error(bama_q_pvalue(fit, Inf))
 must_error(bama_pvalue(fit, numeric()))
+
+# Data preparation and fitting are separate. The documented vector, list,
+# data-frame and grouped-input forms must produce the same analyses.
+inputs <- williams_data()
+fits <- bama(inputs)
+stopifnot(identical(names(inputs), c("Open-label TADs", "PAT")),
+          identical(names(fits), names(inputs)),
+          all(vapply(inputs, function(x) identical(names(x),
+                     c("estimate", "se", "study")), logical(1))))
+legacy <- williams_example()
+for (i in seq_along(inputs)) {
+  d <- inputs[[i]]
+  direct <- bama(estimate = d$estimate, se = d$se, study = d$study)
+  single <- bama(williams_data(names(inputs)[i]))
+  framed <- bama(as.data.frame(d))
+  variance_input <- bama(list(estimate = d$estimate, variance = d$se^2,
+                             study = d$study))
+  for (other in list(direct, single, framed, variance_input, legacy[[i]])) {
+    close_to(invariant_values(other), invariant_values(fits[[i]]))
+    close_to(other$fe$estimate, fits[[i]]$fe$estimate)
+    stopifnot(identical(other$study, fits[[i]]$study))
+  }
+  stopifnot(identical(fits[[i]]$label, names(inputs)[i]),
+            identical(single$label, names(inputs)[i]))
+  close_to(c(fits[[i]]$thresholds$b_significance,
+             fits[[i]]$thresholds$b_compatibility),
+           reference[[i]][c("b_max", "b_min")])
+}
+stopifnot(identical(williams_data("TAD"),
+                    williams_data("Open-label TADs")),
+          nrow(williams_data("PAT", format = "data.frame")) == 8L)
+aliased <- ba_meta(inputs[["PAT"]])
+close_to(invariant_values(aliased), invariant_values(fits[["PAT"]]))
+configured <- bama(inputs, level = 0.90, null = -1,
+                   q_method = "conservative", exact_max = 2L)
+for (i in seq_along(inputs)) {
+  expected <- bama(inputs[[i]], level = 0.90, null = -1,
+                   q_method = "conservative", exact_max = 2L)
+  close_to(invariant_values(configured[[i]]), invariant_values(expected))
+  stopifnot(configured[[i]]$level == 0.90, configured[[i]]$null == -1,
+            configured[[i]]$q$exact_max == 2,
+            configured[[i]]$q$method == "conservative")
+}
+must_error(bama(inputs, q_method = "exact", exact_max = 2L))
+must_error(bama(inputs[[1]], se = inputs[[1]]$se))
+must_error(bama(inputs, study = "override"))
+must_error(bama(list()))
+must_error(bama(unname(inputs)))
+must_error(bama(list(estimate = c(1, 2), se = c(1, 1), se = c(2, 2))))
+must_error(bama(list(estimate = c(1, 2), se = c(1, 1), extra = 1)))
+must_error(bama(list(estimate = c(1, 2), se = c(1, 1), variance = c(1, 1))))
+must_error(bama(list(estimates = c(1, 2), se = c(1, 1))))
+must_error(bama(list(estimate = list(1, 2), se = c(1, 1))))
+must_error(bama(list(PAT = inputs[[2]], PAT = inputs[[2]])))
+must_error(bama(setNames(inputs, c("PAT", ""))))
+must_error(bama(setNames(inputs, c("PAT", NA_character_))))
+must_error(bama(list(PAT = inputs[[2]], other = list(se = c(1, 1)))))
+must_error(williams_data("unknown"))
+must_error(williams_data(c("TAD", "PAT")))
+must_error(williams_data(NA_character_))
 
 cat("All BaMeta numerical regression and invariant checks passed.\n")

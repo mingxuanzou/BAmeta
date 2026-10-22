@@ -1,13 +1,12 @@
-# ba_meta / BaMeta
+# BaMeta
 
 **Bias-aware meta-analysis for independent study estimates.** This repository
 implements the treatment-control methods in Mingxuan Zou and Peng Ding,
 *Bias-aware meta-analysis: beyond fixed-effect and random-effects meta-analyses*
 (2026 manuscript).
 
-The GitHub repository is named `ba_meta`; the installable R package is `BaMeta`
-because R package names cannot contain underscores. The main fitting function
-is `ba_meta()`.
+The R package and GitHub repository are named `BaMeta`. The main fitting
+function is `bama()`.
 
 Maintainer: Mingxuan Zou <mingxuanzou@uchicago.edu>.
 See [release notes](docs/release.md) for publication and CRAN checks.
@@ -19,7 +18,7 @@ compiled code. Install from GitHub:
 
 ```r
 install.packages("remotes")  # Needed once to install from GitHub
-remotes::install_github("mingxuanzou/ba_meta")
+remotes::install_github("mingxuanzou/BaMeta")
 library(BaMeta)
 ```
 
@@ -38,7 +37,7 @@ Supply one estimate and its standard error (or variance) per independent study:
 ```r
 library(BaMeta)
 
-fit <- ba_meta(
+fit <- bama(
   estimate = c(-0.30, -0.50, -0.20, -0.40),
   se = c(0.10, 0.20, 0.15, 0.12),
   study = c("Study 1", "Study 2", "Study 3", "Study 4")
@@ -49,7 +48,9 @@ bama_thresholds(fit)
 bama_diagnostics(fit)
 ```
 
-Use `variance = ...` instead of `se = ...` when your input contains variances.
+`bama()` also accepts a named list or data frame containing `estimate`,
+`se` (or `variance`), and optionally `study`. Use `variance = ...` instead
+of `se = ...` when your input contains variances.
 The default confidence level is 0.95 and the null value is zero. Invalid or
 missing values are rejected; studies are never silently dropped. At least two
 independent studies are required. Correlated multi-arm contrasts must not be
@@ -57,23 +58,49 @@ entered as if they were independent studies.
 
 ## Paper-style output
 
+`williams_data()` returns a named list of the two treatment groups. Each group
+contains `estimate`, `se`, and `study` vectors, in the same form as the inputs
+above. Pass these data to `bama()` to fit both groups separately:
+
 ```r
-fits <- williams_example()
+fit <- bama(williams_data())
+summary(fit[["Open-label TADs"]])
+summary(fit[["PAT"]])
 
 # Raw numeric tables, suitable for further analysis or CSV export
-tables <- bama_tables(fits)
+tables <- bama_tables(fit)
 tables$panel_a
 tables$panel_b
 
 # Manuscript-style Panels A and B
-bama_report(fits, file = "results.html")
-bama_report(fits, file = "results.tex", format = "latex")
+bama_report(fit, file = "results.html")
+bama_report(fit, file = "results.tex", format = "latex")
 
 # Figures
-bama_plot_sensitivity(fits)
-bama_plot_calibration(fits, binwidth = c(1, 0.5))
-bama_plot_q(fits)
+bama_plot_sensitivity(fit)
+bama_plot_calibration(fit, binwidth = c(1, 0.5))
+bama_plot_q(fit)
 ```
+
+To fit one treatment group, use:
+
+```r
+fit_pat <- bama(williams_data("PAT"))
+summary(fit_pat)
+```
+
+You can inspect or edit the input vectors before fitting:
+
+```r
+dat <- williams_data("PAT")
+dat$estimate
+dat$se
+dat$study
+fit_pat <- bama(dat)
+```
+
+For the complete source data and provenance columns, use
+`williams_data(format = "data.frame")`.
 
 **Panel A** reports FEMA, REMA (DerSimonian-Laird), and the FEMA estimator with
 REMA-adjusted variance (FEMA-dagger): estimate, standard error, normal-reference
@@ -89,7 +116,7 @@ compatibility, using the fitted null value and model-checking level. It is
 the smallest target-test p-value among the compatible bias levels. Like the
 optimistic interval, it is descriptive and has no general type I error
 guarantee, because compatibility does not establish an upper bias bound.
-The numeric value is returned as `bama_tables(fits)$panel_b$optimistic_p_value`.
+The numeric value is returned as `bama_tables(fit)$panel_b$optimistic_p_value`.
 
 ![Panels A and B](docs/figures/panels.png)
 
@@ -105,7 +132,7 @@ PDF output uses standard R graphics devices:
 
 ```r
 pdf("calibration.pdf", width = 10.2, height = 4.65)
-bama_plot_calibration(fits, binwidth = c(1, 0.5))
+bama_plot_calibration(fit, binwidth = c(1, 0.5))
 dev.off()
 ```
 
@@ -139,45 +166,6 @@ credible intervals from Figure 2A, with standard errors approximated from
 interval widths. They represent within-arm HAM-D changes, not direct
 treatment-control causal effects. Arns et al. (2016) is excluded. See
 [data provenance](inst/extdata/README.md).
-
-## Statistical interpretation
-
-The BAMA bound is `abs(Delta_j) <= b * sqrt(J) * sigma_FE`. For a **fixed**
-chosen bias bound, the interval uses a folded-normal critical value and is
-uniformly valid under the independent normal-study model with known variances.
-Estimated standard errors rely on the usual large-sample approximation.
-
-- The maximum bias for significance is the first bias level at which the
-  interval includes the specified null value.
-- The minimum bias for compatibility is the first level not rejected by the
-  Q-based model check. It does not give an upper bound on the true bias.
-- The optimistic interval evaluates the interval at that data-dependent
-  minimum. It is descriptive and need not have nominal coverage.
-- Histogram values `b_j` measure observed dispersion around the FEMA estimate.
-  They include sampling error and cannot detect a bias shared by all studies.
-  They are not automatically valid upper bounds on the true bias.
-- Actual leave-one-out pooled shifts differ from `b_j`: on the same reference
-  scale, their magnitudes are `weight / (1 - weight) * b_j`. Both are returned.
-
-With `q_method = "auto"`, the Q calculation uses exact meet-in-the-middle
-partitioning for at most 36 studies and the conservative `J * b^2` bound above
-that limit. `q_method = "exact"` refuses computations above the configured
-limit instead of silently approximating them. Conservative p-values can be
-larger and their compatibility thresholds smaller than the exact versions.
-
-## Validation and scope
-
-The dependency-free tests compare with independent numerical reference results,
-exhaustive small weighted partitions, confidence/p-value boundaries, study
-permutations, unit changes, null translations, and explicit leave-one-out refits.
-
-```sh
-R CMD build .
-R CMD check --no-manual BaMeta_0.1.0.tar.gz
-```
-
-This release covers independent scalar study estimates in the current paper.
-The earlier network-focused `BiasRobustMeta` package has a different interface.
 
 ## Citation and license
 

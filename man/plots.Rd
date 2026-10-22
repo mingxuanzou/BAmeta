@@ -21,7 +21,7 @@ bama_plot_calibration(fits, breaks = NULL, labels = NULL,
   max_col = "#23384A", threshold_col = "#AA4B35")
 }
 \arguments{
-\item{fits}{A \code{bama_fit} returned by \code{ba_meta}, or a nonempty
+\item{fits}{A \code{bama_fit} returned by \code{bama}, or a nonempty
 list of fits. Each fit receives its own panel.}
 \item{b}{A finite nonnegative numeric grid with at least two distinct values,
 or a list containing one such grid per fit. The default grids include the
@@ -78,9 +78,9 @@ plots. Calibration returns a list with named \code{diagnostics} data frames
 and \code{histograms} containing the break points and unweighted counts.
 }
 \examples{
-fit <- ba_meta(c(-1.2, -0.7, -1.6, -0.9), se = c(0.3, 0.4, 0.5, 0.3))
+fit <- bama(c(-1.2, -0.7, -1.6, -0.9), se = c(0.3, 0.4, 0.5, 0.3))
 bama_plot_sensitivity(fit)
 bama_plot_q(fit)
 bama_plot_calibration(fit, binwidth = 0.5)
 }
-\seealso{\code{\link{ba_meta}}, \code{\link{bama_diagnostics}}}
+\seealso{\code{\link{bama}}, \code{\link{bama_diagnostics}}}

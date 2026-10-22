@@ -1,6 +1,6 @@
 # Validation record
 
-Validated on 21 October 2026 using R 4.3.3 on Linux, after renaming the package
+Version 0.1.0 was validated on 21 October 2026 using R 4.3.3 on Linux, after renaming the package
 to `BaMeta` and adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
 
 - Independent Williams calculations reproduce the latest manuscript's rounded
@@ -26,9 +26,25 @@ to `BaMeta` and adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
   including the optimistic p-values and significance codes. Their numerical
   results match the prior output.
 
-Current R and R-devel checks on multiple operating systems remain pending.
-The GitHub Actions workflow is configured for those checks. Their status is
-reported at <https://github.com/mingxuanzou/ba_meta/actions>.
+The published 0.1.0 commit `e46bfbc` also passed `R CMD check --as-cran
+--no-manual` on R 4.6.1 for Linux, Windows and macOS, and on Linux R-devel
+(2026-10-20 r90728). All four checks completed without errors or warnings.
+Each reported two notes: new submission, and unavailable Pandoc for checking
+README/NEWS files. The run is recorded at
+<https://github.com/mingxuanzou/BaMeta/actions/runs/39705795095>.
+
+Version 0.1.1 was checked after introducing `bama()` and separating the
+Williams inputs from fitting. `R CMD check --as-cran` on R 4.3.3 completed
+without errors or warnings, including PDF manual compilation with
+`R_RD4PDF=times,hyper`. The same three local-runtime/new-submission notes
+listed above remain. New regression checks confirm that vector, list,
+data-frame and grouped inputs give equivalent results; treatment labels,
+fitting options and invalid-input errors are also checked. The updated
+reproduction script generated all tables and figures successfully, and the
+complete treatment summaries reproduce the previous printed numerical output.
+
+Checks for later revisions are reported at
+<https://github.com/mingxuanzou/BaMeta/actions>.
 
 No annotated manuscript, private comments or unrelated source archive is
 included. No CRAN submission has been made.
