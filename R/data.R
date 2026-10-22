@@ -15,7 +15,7 @@ williams_data <- function(group = NULL, format = c("list", "data.frame")) {
     labels <- labels[index]
   }
   dat <- utils::read.csv(
-    system.file("extdata", "williams2026.csv", package = "BaMeta"),
+    system.file("extdata", "williams2026.csv", package = "BAmeta"),
     stringsAsFactors = FALSE, check.names = FALSE)
   dat <- dat[dat$class %in% groups, , drop = FALSE]
   if (format == "data.frame") return(dat)

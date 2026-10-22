@@ -1,6 +1,6 @@
 # Independent numerical regression and mathematical invariants.
 # Uses only base/recommended R packages, so R CMD check needs no test runner.
-library(BaMeta)
+library(BAmeta)
 
 close_to <- function(actual, expected, tolerance = 1e-8, label = "numeric result") {
   if (length(actual) != length(expected) || any(!is.finite(actual)) ||
@@ -266,4 +266,4 @@ must_error(williams_data("unknown"))
 must_error(williams_data(c("TAD", "PAT")))
 must_error(williams_data(NA_character_))
 
-cat("All BaMeta numerical regression and invariant checks passed.\n")
+cat("All BAmeta numerical regression and invariant checks passed.\n")

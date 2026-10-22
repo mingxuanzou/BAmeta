@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-library(BaMeta)
+library(BAmeta)
 args <- commandArgs(trailingOnly = TRUE)
 out <- if (length(args)) args[1L] else "outputs"
 dir.create(out, recursive = TRUE, showWarnings = FALSE)

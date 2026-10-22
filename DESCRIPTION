@@ -1,7 +1,7 @@
-Package: BaMeta
+Package: BAmeta
 Type: Package
 Title: Bias-Aware Meta-Analysis with Bounded Study Biases
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: person("Mingxuan", "Zou", email = "mingxuanzou@uchicago.edu",
     role = c("aut", "cre"))
 Author: Mingxuan Zou [aut, cre]
@@ -14,8 +14,8 @@ Description: Implements bias-aware meta-analysis for independent study
     tables, sensitivity curves, and calibration histograms. Includes the
     reconstructed Williams example used by Zou and Ding (2026).
 License: MIT + file LICENSE
-URL: https://github.com/mingxuanzou/BaMeta
-BugReports: https://github.com/mingxuanzou/BaMeta/issues
+URL: https://github.com/mingxuanzou/BAmeta
+BugReports: https://github.com/mingxuanzou/BAmeta/issues
 Encoding: UTF-8
 Depends: R (>= 4.1.0)
 Imports: stats, graphics, utils

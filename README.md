@@ -1,11 +1,11 @@
-# BaMeta
+# BAmeta
 
 **Bias-aware meta-analysis for independent study estimates.** This repository
 implements the treatment-control methods in Mingxuan Zou and Peng Ding,
 *Bias-aware meta-analysis: beyond fixed-effect and random-effects meta-analyses*
 (2026 manuscript).
 
-The R package and GitHub repository are named `BaMeta`. The main fitting
+The R package and GitHub repository are named `BAmeta`. The main fitting
 function is `bama()`.
 
 Maintainer: Mingxuan Zou <mingxuanzou@uchicago.edu>.
@@ -18,8 +18,8 @@ compiled code. Install from GitHub:
 
 ```r
 install.packages("remotes")  # Needed once to install from GitHub
-remotes::install_github("mingxuanzou/BaMeta")
-library(BaMeta)
+remotes::install_github("mingxuanzou/BAmeta")
+library(BAmeta)
 ```
 
 Alternatively, from the root of a downloaded or cloned repository:
@@ -35,7 +35,7 @@ The publication preparation notes are in [docs/release.md](docs/release.md).
 Supply one estimate and its standard error (or variance) per independent study:
 
 ```r
-library(BaMeta)
+library(BAmeta)
 
 fit <- bama(
   estimate = c(-0.30, -0.50, -0.20, -0.40),
@@ -152,7 +152,7 @@ This writes Panels A/B in HTML, LaTeX, Markdown and CSV; sensitivity, Q and
 calibration figures in PDF and PNG; study-level calibration/leave-one-out
 diagnostics; curve values; and R session information. The same script is
 available after installation under
-`system.file("examples", "reproduce_williams.R", package = "BaMeta")`.
+`system.file("examples", "reproduce_williams.R", package = "BAmeta")`.
 
 The included data reproduce these reference results:
 
@@ -170,6 +170,6 @@ treatment-control causal effects. Arns et al. (2016) is excluded. See
 ## Citation and license
 
 Please cite Zou and Ding's BAMA manuscript and the package version used.
-`citation("BaMeta")` prints the software citation. Code is distributed under
+`citation("BAmeta")` prints the software citation. Code is distributed under
 the [MIT license](LICENSE.md). The data documentation retains attribution to
 the source publication.

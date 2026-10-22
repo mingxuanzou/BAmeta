@@ -1,7 +1,7 @@
 # Validation record
 
-Version 0.1.0 was validated on 21 October 2026 using R 4.3.3 on Linux, after renaming the package
-to `BaMeta` and adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
+Version 0.1.0 was validated on 21 October 2026 using R 4.3.3 on Linux, after
+adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
 
 - Independent Williams calculations reproduce the latest manuscript's rounded
   Panel A/B entries, both bias thresholds and the histogram maxima.
@@ -14,7 +14,7 @@ to `BaMeta` and adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
   compiled and visually inspected.
 - The installed example script generated CSV, HTML, LaTeX, Markdown, PNG and
   PDF outputs successfully.
-- The final source tarball builds, installs and loads as `BaMeta`. Its installed
+- The final source tarball built, installed and loaded successfully. Its installed
   metadata contains the real maintainer email supplied by the author.
 - `R CMD check --as-cran` completed on the deliverable tarball with no errors
   or warnings and three notes: new submission, inability to verify current
@@ -22,7 +22,7 @@ to `BaMeta` and adding Mingxuan Zou <mingxuanzou@uchicago.edu> as maintainer.
   and the R package `V8` are unavailable in the local runtime.
 - PDF manual compilation passed with `R_RD4PDF=times,hyper`, the documented
   R setting for using installed standard fonts when Inconsolata is unavailable.
-- Both treatment summaries were rerun from the installed `BaMeta` package,
+- Both treatment summaries were rerun from the installed package,
   including the optimistic p-values and significance codes. Their numerical
   results match the prior output.
 
@@ -31,7 +31,7 @@ The published 0.1.0 commit `e46bfbc` also passed `R CMD check --as-cran
 (2026-10-20 r90728). All four checks completed without errors or warnings.
 Each reported two notes: new submission, and unavailable Pandoc for checking
 README/NEWS files. The run is recorded at
-<https://github.com/mingxuanzou/BaMeta/actions/runs/39705795095>.
+<https://github.com/mingxuanzou/BAmeta/actions/runs/39705795095>.
 
 Version 0.1.1 was checked after introducing `bama()` and separating the
 Williams inputs from fitting. `R CMD check --as-cran` on R 4.3.3 completed
@@ -43,8 +43,17 @@ fitting options and invalid-input errors are also checked. The updated
 reproduction script generated all tables and figures successfully, and the
 complete treatment summaries reproduce the previous printed numerical output.
 
+Version 0.1.2 was validated on 22 October 2026 after renaming the package
+and repository to `BAmeta`. A fresh-library installation loaded `BAmeta`
+version 0.1.2 successfully. `R CMD check --as-cran` on the source tarball
+completed without errors or warnings, with the same three notes listed
+above; PDF manual compilation passed. The installed package reproduced
+all Williams tables and figures, and both complete treatment summaries
+retain the previous numerical results. Package metadata, data lookup,
+examples, citation, documentation and CI now use `BAmeta`.
+
 Checks for later revisions are reported at
-<https://github.com/mingxuanzou/BaMeta/actions>.
+<https://github.com/mingxuanzou/BAmeta/actions>.
 
 No annotated manuscript, private comments or unrelated source archive is
 included. No CRAN submission has been made.

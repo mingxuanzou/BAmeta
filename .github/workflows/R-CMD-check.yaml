@@ -26,9 +26,9 @@ jobs:
         run: |
           build <- system2(file.path(R.home("bin"), "R"), c("CMD", "build", "."))
           if (build != 0L) stop("R CMD build failed")
-          tarball <- list.files(pattern = "^BaMeta_.*[.]tar[.]gz$")
+          tarball <- list.files(pattern = "^BAmeta_.*[.]tar[.]gz$")
           stopifnot(length(tarball) == 1L)
           status <- system2(file.path(R.home("bin"), "R"), c("CMD", "check", "--as-cran", "--no-manual", tarball))
           if (status != 0L) stop("R CMD check failed")
-          log <- readLines("BaMeta.Rcheck/00check.log")
+          log <- readLines("BAmeta.Rcheck/00check.log")
           if (any(grepl("(ERROR|WARNING)$", log))) stop("Check has errors or warnings")

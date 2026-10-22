@@ -1,18 +1,18 @@
 # Publication preparation
 
-The installable R package is `BaMeta`, version 0.1.1. The maintainer is
+The installable R package is `BAmeta`, version 0.1.2. The maintainer is
 Mingxuan Zou <mingxuanzou@uchicago.edu>. Build, check and install the source
 package from the repository root:
 
 ```sh
 R CMD build .
-R CMD check --as-cran BaMeta_0.1.1.tar.gz
-R CMD INSTALL BaMeta_0.1.1.tar.gz
+R CMD check --as-cran BAmeta_0.1.2.tar.gz
+R CMD INSTALL BAmeta_0.1.2.tar.gz
 Rscript scripts/reproduce_williams.R outputs
 ```
 
-The public repository is <https://github.com/mingxuanzou/BaMeta>, retaining
-the installable name `BaMeta`. The DESCRIPTION and README contain the repository
+The public repository is <https://github.com/mingxuanzou/BAmeta>, retaining
+the installable name `BAmeta`. The DESCRIPTION and README contain the repository
 links and GitHub installation command. Private annotated manuscripts and
 unrelated source archives are excluded.
 
@@ -20,8 +20,8 @@ The prepared GitHub Actions workflow runs CRAN-style checks on current R
 for Linux, Windows and macOS, and on R-devel for Linux. It checks installation,
 documentation, examples and numerical regression tests, excluding PDF manual
 compilation. Check the actual run results at
-<https://github.com/mingxuanzou/BaMeta/actions> before CRAN submission. A public
-v0.1.1 tag/release should identify the exact checked commit used for the paper.
+<https://github.com/mingxuanzou/BAmeta/actions> before CRAN submission. A public
+v0.1.2 tag/release should identify the exact checked commit used for the paper.
 
 Before CRAN submission, run checks with current R and R-devel and on at least
 two major operating systems. Upload the built source tarball through
